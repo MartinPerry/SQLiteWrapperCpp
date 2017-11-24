@@ -51,6 +51,33 @@ void SQLTable::Clear() const
 	this->wrapper->Query("DELETE FROM " + name).Execute();
 }
 
+
+void SQLTable::AddColumn(const std::string & colName, SQLEnums::ValueDataType type)
+{
+	auto keys = wrapper->Query("PRAGMA table_info(" + name + ")").Select();
+	for (auto k : keys)
+	{
+		int c = k.ColumnCount();
+		for (int i = 0; i < c; i++)
+		{
+			if (k.at(i).as_string() == colName)
+			{
+				return;
+			}
+		}
+	}
+
+	std::string q = "";
+	if (type == SQLEnums::ValueDataType::String) q += " TEXT";
+	else if (type == SQLEnums::ValueDataType::Integer) q += " INTEGER";
+	else if (type == SQLEnums::ValueDataType::Float) q += " REAL";
+	else if (type == SQLEnums::ValueDataType::Blob) q += " BLOB";
+
+
+	this->wrapper->Query("ALTER TABLE " + name + " ADD COLUMN " + colName + " " + q).Execute();
+}
+
+
 //==============================================================================
 
 
@@ -100,21 +127,7 @@ void SQLKeyValueTable::RemoveNotRegisteredKeys()
 }
 
 void SQLKeyValueTable::AddNewKeyValue(const std::string & key, const std::string & value)
-{
-	/*
-	auto keys = wrapper->Query("PRAGMA table_info(" + name + ")").Select();
-	for (auto k : keys)
-	{
-		int c = k.ColumnCount();
-		for (int i = 0; i < c; i++)
-		{
-			printf("%s ", k.at(i).as_string().c_str());
-			printf("%s ", k.at(i).GetColumnName().c_str());
-			printf("\n");
-		}
-	}
-	*/
-
+{	
 	auto results = wrapper->Query("SELECT COUNT(*) FROM " + name + " WHERE key=?").Select(key);
 	int count = results.GetNextRow()->at(0).as_int();
 	if (count != 0)

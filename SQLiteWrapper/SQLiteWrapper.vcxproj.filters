@@ -59,5 +59,8 @@
     <ClInclude Include="SQLTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ORM.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -91,7 +91,11 @@ std::shared_ptr<SQLTable> SQLiteWrapper::CreateTable(const std::string & tableNa
 		return std::shared_ptr<SQLTable>(new SQLTable(tableName, shared_from_this()));
 	}
 
-	std::string q = "CREATE TABLE " + tableName + " (";
+	std::string q = "CREATE TABLE " + tableName;
+
+	q += " (";
+	
+
 	for (auto & c : columns)
 	{
 		q += c.name;
@@ -113,7 +117,8 @@ std::shared_ptr<SQLTable> SQLiteWrapper::CreateTable(const std::string & tableNa
 	}
 	q.pop_back();
 	q += ")";
-
+	
+	
 	this->Query(q).Execute();
 
 	if (this->ExistTable(tableName) == false)

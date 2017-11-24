@@ -33,6 +33,7 @@ public:
 	std::string ToCSV(const std::string & columns, const std::string & delimeter) const;
 
 	void Clear() const;
+	void AddColumn(const std::string & colName, SQLEnums::ValueDataType type);
 
 	friend class SQLiteWrapper;
 
@@ -150,6 +151,16 @@ public:
 	virtual ~SQLSimpleKeyValueTable() { this->RemoveNotRegisteredKeys(); }
 };
 
+class SQLAdvancedKeyValueTable : public SQLKeyValueTable
+{
+public:
+
+	SQLAdvancedKeyValueTable(const std::string & name, std::shared_ptr<SQLiteWrapper> wrapper)
+		: SQLKeyValueTable(name, wrapper) {	}
+
+	virtual ~SQLAdvancedKeyValueTable() { this->RemoveNotRegisteredKeys(); }
+};
+
 //===============================================================================
 
 template <typename T, typename>
@@ -169,7 +180,12 @@ template <typename T>
 RET_VAL_SAME(std::string) SQLKeyValueTable::GetValue(const std::string & key)
 {
 	auto s = this->selectQuery.Select(key);
-	return s.GetNextRow()->at(0).as_string();
+    auto tmp = s.GetNextRow();
+    if (tmp == nullptr)
+    {
+        return T();
+    }
+	return tmp->at(0).as_string();
 };
 
 
@@ -177,14 +193,24 @@ template <typename T>
 RET_VAL_GROUP(is_integral) SQLKeyValueTable::GetValue(const std::string & key)
 {
 	auto s = this->selectQuery.Select(key);
-	return static_cast<T>(s.GetNextRow()->at(0).as_long());
+    auto tmp = s.GetNextRow();
+    if (tmp == nullptr)
+    {
+        return T();
+    }
+	return static_cast<T>(tmp->at(0).as_long());
 };
 
 template <typename T>
 RET_VAL_GROUP(is_floating_point) SQLKeyValueTable::GetValue(const std::string & key)
 {
 	auto s = this->selectQuery.Select(key);
-	return static_cast<T>(s.GetNextRow()->at(0).as_double());
+    auto tmp = s.GetNextRow();
+    if (tmp == nullptr)
+    {
+        return T();
+    }
+	return static_cast<T>(tmp->at(0).as_double());
 };
 
 

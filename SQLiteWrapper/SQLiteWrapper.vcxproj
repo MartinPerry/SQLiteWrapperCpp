@@ -152,6 +152,7 @@
     <ClCompile Include="SQLTable.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ORM.h" />
     <ClInclude Include="SQLEnums.h" />
     <ClInclude Include="sqlite3.h" />
     <ClInclude Include="SQLiteWrapper.h" />
