@@ -57,6 +57,8 @@ public:
 	SQLKeyValueTable(const std::string & name, std::shared_ptr<SQLiteWrapper> wrapper);
 	virtual ~SQLKeyValueTable();
 
+	void EnableRemovalOfNonRegisteredKeys();
+	void DisableRemovalOfNonRegisteredKeys();
 	void RemoveKey(const std::string & key);
 
 	template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
@@ -127,7 +129,8 @@ protected:
 	SQLQuery updateQuery;
 	SQLQuery selectQuery;
 	std::vector<std::string> keys;
-	
+	bool enableNotregisteredKeysRemoval;
+
 	void RemoveNotRegisteredKeys();
 
 	template <typename T>

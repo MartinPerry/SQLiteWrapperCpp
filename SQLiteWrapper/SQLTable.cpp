@@ -102,8 +102,22 @@ SQLKeyValueTable::~SQLKeyValueTable()
 	
 }
 
+void SQLKeyValueTable::EnableRemovalOfNonRegisteredKeys()
+{
+	this->enableNotregisteredKeysRemoval = true;
+}
+
+void SQLKeyValueTable::DisableRemovalOfNonRegisteredKeys()
+{
+	this->enableNotregisteredKeysRemoval = false;
+}
+
 void SQLKeyValueTable::RemoveNotRegisteredKeys()
 {
+	if (this->enableNotregisteredKeysRemoval == false)
+	{
+		return;
+	}
 	auto result = wrapper->Query("SELECT key FROM " + name + "").Select();
 	for (auto & row : result)
 	{

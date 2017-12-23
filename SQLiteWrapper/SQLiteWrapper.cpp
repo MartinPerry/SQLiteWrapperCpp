@@ -71,7 +71,11 @@ void SQLiteWrapper::DropAll()
         this->DropTable(t);
     }
     
-    this->OpenTable<SQLTable>("sqlite_sequence")->Clear();
+	auto tbl = this->OpenTable<SQLTable>("sqlite_sequence");
+	if (tbl != nullptr)
+	{
+		tbl->Clear();
+	}
 }
 
 void SQLiteWrapper::DropTable(const std::string & tableName) const
