@@ -32,6 +32,24 @@ public:
         long as_long() const;
         double as_double() const;
         
+		template <typename T>
+		RET_VAL_SAME(std::string) as() const
+		{
+			return as_string();
+		};
+
+		template <typename T>
+		RET_VAL_GROUP(is_integral) as() const
+		{
+			return static_cast<T>(as_long());
+		};
+
+		template <typename T>
+		RET_VAL_GROUP(is_floating_point) as() const
+		{
+			return static_cast<T>(as_double());
+		};
+
         std::string GetColumnName() const;
 		SQLEnums::ValueDataType GetColumnType();
         friend class SQLRow;

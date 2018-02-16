@@ -45,8 +45,6 @@ protected:
 };
 
 //===============================================================================
-#define RET_VAL_GROUP(retType) typename std::enable_if<std::retType<T>::value, T>::type
-#define RET_VAL_SAME(retType) typename std::enable_if<std::is_same<T, retType>::value, T>::type
 
 #define REGISTER_VARIABLE(type, name) KeyValueProperty<type> name{ #name, this };
 #define REGISTER_VARIABLE_DEFAULT(type, name, defaultVal) KeyValueProperty<type> name{ #name, this, defaultVal };

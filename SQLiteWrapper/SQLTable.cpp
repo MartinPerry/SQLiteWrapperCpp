@@ -143,9 +143,17 @@ void SQLKeyValueTable::RemoveNotRegisteredKeys()
 void SQLKeyValueTable::AddNewKeyValue(const std::string & key, const std::string & value)
 {	
 	auto results = wrapper->Query("SELECT COUNT(*) FROM " + name + " WHERE key=?").Select(key);
-	int count = results.GetNextRow()->at(0).as_int();
+    const SQLRow * row = results.GetNextRow();
+	if (row == nullptr)
+	{
+		//something failed ?
+		return;
+	}
+
+	int count = row->at(0).as_int();
 	if (count != 0)
 	{		
+		//alreday exist
 		return;
 	}
 

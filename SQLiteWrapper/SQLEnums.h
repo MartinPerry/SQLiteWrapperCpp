@@ -1,6 +1,11 @@
 #ifndef SQLEnums_hpp
 #define SQLEnums_hpp
 
+
+#define RET_VAL_GROUP(retType) typename std::enable_if<std::retType<T>::value, T>::type
+#define RET_VAL_SAME(retType) typename std::enable_if<std::is_same<T, retType>::value, T>::type
+
+
 struct SQLEnums 
 {
 	enum OpenMode {
