@@ -83,6 +83,25 @@ void SQLiteWrapper::DropTable(const std::string & tableName) const
     this->Query("DROP TABLE IF EXISTS " + tableName).Execute();
 }
 
+bool SQLiteWrapper::CheckIntegrity()
+{
+	SQLResult res = this->Query("pragma integrity_check").Select();
+
+	auto row = res.GetNextRow();
+	if (row->ColumnCount() == 0)
+	{
+		return false;
+	}
+	std::string res1 = row->at(0).as_string();
+
+	if (res1 == "ok")
+	{
+		return true;
+	}
+
+	return false;
+}
+
 
 std::shared_ptr<SQLTable> SQLiteWrapper::CreateTable(const std::string & tableName,
 	const std::vector<SQLTable::TableEntry> & columns,

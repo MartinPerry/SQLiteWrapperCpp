@@ -68,7 +68,7 @@ public:
     RowValue operator []( const std::string & key ) const;
     RowValue at( const int index ) const;
     RowValue at( const std::string & key ) const;
-    int ColumnCount();
+    int ColumnCount() const;
     
     friend class SQLResult;
     

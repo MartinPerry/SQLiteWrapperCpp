@@ -46,7 +46,7 @@ std::string SQLTable::ToCSV(const std::string & columns,
 }
 
 
-void SQLTable::Clear() const
+void SQLTable::Clear()
 {
 	this->wrapper->Query("DELETE FROM " + name).Execute();
 }
@@ -101,6 +101,14 @@ SQLKeyValueTable::~SQLKeyValueTable()
 {
 	
 }
+
+void SQLKeyValueTable::Clear()
+{
+    this->updateQuery.Reset();
+    this->selectQuery.Reset();
+    SQLTable::Clear();
+}
+
 
 void SQLKeyValueTable::EnableRemovalOfNonRegisteredKeys()
 {

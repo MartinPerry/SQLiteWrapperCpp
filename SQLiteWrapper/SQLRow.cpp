@@ -38,7 +38,7 @@ SQLRow::RowValue SQLRow::at( const std::string & key ) const
     return this->operator[](key);
 }
 
-int SQLRow::ColumnCount()
+int SQLRow::ColumnCount() const
 {
     return res->ColumnCount();
 }

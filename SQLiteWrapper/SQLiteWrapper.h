@@ -33,7 +33,7 @@
 #define SQLITE_CHECK(stmt) do { \
 int r = stmt; \
 if (r != SQLITE_OK && r != SQLITE_DONE){ \
-    SQL_LOG("SQLite error: %i - %s", r, #stmt); \
+    SQL_LOG("SQLite error: %i - %s\n", r, #stmt); \
 } \
 } while (0);
 #else
@@ -60,6 +60,8 @@ public:
     void DropAll();
     void DropTable(const std::string & tableName) const;
     
+	bool CheckIntegrity();
+
 	template <typename T>
 	std::shared_ptr<T> OpenTable(const std::string & tableName);
 	std::shared_ptr<SQLTable> CreateTable(const std::string & tableName,

@@ -32,7 +32,7 @@ public:
 	std::string ToCSV() const;
 	std::string ToCSV(const std::string & columns, const std::string & delimeter) const;
 
-	void Clear() const;
+	virtual void Clear();
 	void AddColumn(const std::string & colName, SQLEnums::ValueDataType type);
 
 	friend class SQLiteWrapper;
@@ -55,6 +55,8 @@ public:
 	SQLKeyValueTable(const std::string & name, std::shared_ptr<SQLiteWrapper> wrapper);
 	virtual ~SQLKeyValueTable();
 
+    void Clear() override;
+    
 	void EnableRemovalOfNonRegisteredKeys();
 	void DisableRemovalOfNonRegisteredKeys();
 	void RemoveKey(const std::string & key);

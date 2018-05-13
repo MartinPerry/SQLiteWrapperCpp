@@ -31,10 +31,12 @@ const SQLResult::const_iterator SQLResult::end()
 
 const SQLRow * SQLResult::GetNextRow()
 {
-    if (isValid == false)
+    if ((isValid == false) || (stmt == nullptr))
     {
+        isValid = false;
         return nullptr;
     }
+    
     
     if ( sqlite3_step( stmt.get() ) != SQLITE_ROW )
     {
