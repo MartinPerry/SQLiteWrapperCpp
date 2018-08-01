@@ -8,7 +8,6 @@
 #endif
 
 
-
 class SQLiteWrapper;
 
 #include <string>
