@@ -148,20 +148,30 @@ void SQLKeyValueTable::RemoveNotRegisteredKeys()
 	}
 }
 
-void SQLKeyValueTable::AddNewKeyValue(const std::string & key, const std::string & value)
-{	
+bool SQLKeyValueTable::ExistKey(const std::string & key)
+{
 	auto results = wrapper->Query("SELECT COUNT(*) FROM " + name + " WHERE key=?").Select(key);
-    const SQLRow * row = results.GetNextRow();
+	const SQLRow * row = results.GetNextRow();
 	if (row == nullptr)
 	{
 		//something failed ?
-		return;
+		return false;
 	}
 
 	int count = row->at(0).as_int();
 	if (count != 0)
-	{		
+	{
 		//alreday exist
+		return true;
+	}
+
+	return false;
+}
+
+void SQLKeyValueTable::AddNewKeyValue(const std::string & key, const std::string & value)
+{
+	if (this->ExistKey(key))
+	{
 		return;
 	}
 
@@ -178,4 +188,14 @@ void SQLKeyValueTable::UpdateValue(const std::string & key, const std::string & 
 	updateQuery.Execute(newValue, key);
 };
 
+void SQLKeyValueTable::AddNewKeyOrUpdateValue(const std::string & key, const std::string & value)
+{
+	if (this->ExistKey(key))
+	{
+		this->UpdateValue(key, value);
+		return;
+	}
+
+	this->AddNewKeyValue(key, value);
+}
 

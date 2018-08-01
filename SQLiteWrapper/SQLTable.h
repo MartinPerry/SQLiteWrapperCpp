@@ -61,10 +61,16 @@ public:
 	void DisableRemovalOfNonRegisteredKeys();
 	void RemoveKey(const std::string & key);
 
+	bool ExistKey(const std::string & key);
+
 	template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
 	void AddNewKeyValue(const std::string & key, const T & newValue);
 	void AddNewKeyValue(const std::string & key, const std::string & value);
-					
+		
+	template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
+	void AddNewKeyOrUpdateValue(const std::string & key, const T & newValue);
+	void AddNewKeyOrUpdateValue(const std::string & key, const std::string & newValue);
+
 	template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
 	void UpdateValue(const std::string & key, const T & newValue);
 	void UpdateValue(const std::string & key, const std::string & newValue);
@@ -170,6 +176,12 @@ template <typename T, typename>
 void SQLKeyValueTable::AddNewKeyValue(const std::string & key, const T & newValue)
 {
 	this->AddNewKeyValue(key, std::to_string(newValue));
+};
+
+template <typename T, typename>
+void SQLKeyValueTable::AddNewKeyOrUpdateValue(const std::string & key, const T & newValue)
+{
+	this->AddNewKeyOrUpdateValue(key, std::to_string(newValue));
 };
 
 template <typename T, typename>
