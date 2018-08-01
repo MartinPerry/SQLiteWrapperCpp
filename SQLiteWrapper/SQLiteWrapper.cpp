@@ -19,7 +19,7 @@ std::shared_ptr<SQLiteWrapper> SQLiteWrapper::Open(const std::string & path, int
 
 SQLiteWrapper::SQLiteWrapper(const std::string & path, int mode) : db(nullptr)
 {
-    
+	sqlite3_shutdown();
     int threadSafe = sqlite3_threadsafe();
     
     if (threadSafe == 1)
@@ -45,6 +45,7 @@ SQLiteWrapper::SQLiteWrapper(const std::string & path, int mode) : db(nullptr)
 SQLiteWrapper::~SQLiteWrapper()
 {
     sqlite3_close_v2( db );
+	sqlite3_shutdown();
 }
 
 sqlite3 * SQLiteWrapper::GetRawConnection()
