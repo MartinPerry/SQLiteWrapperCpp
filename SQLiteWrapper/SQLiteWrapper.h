@@ -13,9 +13,7 @@
 #include <memory>
 #include <vector>
 
-#ifdef __ANDROID_API__
-#include <android/log.h>
-#endif
+
 
 #include "sqlite3.h"
 
@@ -23,11 +21,7 @@
 #include "SQLQuery.h"
 #include "SQLTable.h"
 
-#ifdef __ANDROID_API__
-	#define SQL_LOG(s, r, p) __android_log_print(ANDROID_LOG_ERROR, "SQLite", s, r, p);
-#else
-	#define SQL_LOG(s, r, p) printf(s, r, p)
-#endif
+#include "SQLLogger.h"
 
 #if defined(_DEBUG) || defined(DEBUG)
 #define SQLITE_CHECK(stmt) do { \

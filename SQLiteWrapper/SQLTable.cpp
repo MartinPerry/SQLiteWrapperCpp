@@ -83,18 +83,19 @@ void SQLTable::AddColumn(const std::string & colName, SQLEnums::ValueDataType ty
 
 SQLKeyValueTable::SQLKeyValueTable(const std::string & name, std::shared_ptr<SQLiteWrapper> wrapper)
 	: SQLTable(name, wrapper)
-{
+{	
 	if (wrapper->ExistTable(name) == false)
 	{
 		wrapper->CreateTable(name, {
 			{ "key", SQLEnums::ValueDataType::String },
 			{ "value", SQLEnums::ValueDataType::String }
-		},
-		"", false);
+			},
+			"", false);
 	}
-
-	this->updateQuery = wrapper->Query("UPDATE " + name + " SET value=? WHERE key=?");
-	this->selectQuery = wrapper->Query("SELECT value FROM " + name + " WHERE key=?");
+	
+	//this->updateQuery = wrapper->Query("UPDATE " + name + " SET value=? WHERE key=?");
+	//this->selectQuery = wrapper->Query("SELECT value FROM " + name + " WHERE key=?");
+	
 }
 
 SQLKeyValueTable::~SQLKeyValueTable()
@@ -104,8 +105,8 @@ SQLKeyValueTable::~SQLKeyValueTable()
 
 void SQLKeyValueTable::Clear()
 {
-    this->updateQuery.Reset();
-    this->selectQuery.Reset();
+    //this->updateQuery.Reset();
+    //this->selectQuery.Reset();
     SQLTable::Clear();
 }
 
@@ -169,7 +170,7 @@ bool SQLKeyValueTable::ExistKey(const std::string & key)
 }
 
 void SQLKeyValueTable::AddNewKeyValue(const std::string & key, const std::string & value)
-{
+{	
 	if (this->ExistKey(key))
 	{
 		return;
@@ -185,8 +186,9 @@ void SQLKeyValueTable::RemoveKey(const std::string & key)
 
 void SQLKeyValueTable::UpdateValue(const std::string & key, const std::string & newValue)
 {
-	updateQuery.Execute(newValue, key);
-};
+	wrapper->Query("UPDATE " + name + " SET value=? WHERE key=?").Execute(newValue, key);
+	//updateQuery.Execute(newValue, key);
+}
 
 void SQLKeyValueTable::AddNewKeyOrUpdateValue(const std::string & key, const std::string & value)
 {
@@ -198,4 +200,12 @@ void SQLKeyValueTable::AddNewKeyOrUpdateValue(const std::string & key, const std
 
 	this->AddNewKeyValue(key, value);
 }
+
+SQLResult SQLKeyValueTable::GetRowForValue(const std::string & key)
+{
+	return wrapper->Query("SELECT value FROM " + name + " WHERE key=?").Select(key);
+	//auto s = this->selectQuery.Select(key);
+	//return s.GetNextRow();
+}
+
 

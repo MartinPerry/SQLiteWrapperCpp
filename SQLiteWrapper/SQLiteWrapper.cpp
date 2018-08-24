@@ -12,6 +12,7 @@
 #include "SQLResult.h"
 #include "SQLRow.h"
 
+
 std::shared_ptr<SQLiteWrapper> SQLiteWrapper::Open(const std::string & path, int mode)
 {
 	return std::shared_ptr<SQLiteWrapper>(new SQLiteWrapper(path, mode));	
@@ -19,9 +20,10 @@ std::shared_ptr<SQLiteWrapper> SQLiteWrapper::Open(const std::string & path, int
 
 SQLiteWrapper::SQLiteWrapper(const std::string & path, int mode) : db(nullptr)
 {
-	sqlite3_shutdown();
+	SQLITE_CHECK(sqlite3_shutdown());
+
     int threadSafe = sqlite3_threadsafe();
-    
+	
     if (threadSafe == 1)
     {
         SQLITE_CHECK(sqlite3_config(SQLITE_CONFIG_SERIALIZED));
@@ -44,8 +46,8 @@ SQLiteWrapper::SQLiteWrapper(const std::string & path, int mode) : db(nullptr)
 
 SQLiteWrapper::~SQLiteWrapper()
 {
-    sqlite3_close_v2( db );
-	sqlite3_shutdown();
+	SQLITE_CHECK(sqlite3_close_v2( db ));
+	SQLITE_CHECK(sqlite3_shutdown());
 }
 
 sqlite3 * SQLiteWrapper::GetRawConnection()

@@ -62,5 +62,8 @@
     <ClInclude Include="ORM.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SQLLogger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -8,7 +8,9 @@
 #endif
 
 
+
 class SQLiteWrapper;
+class SQLRow;
 
 #include <string>
 #include <memory>
@@ -26,7 +28,7 @@ public:
 		SQLEnums::ValueDataType type;		
 	} TableEntry;
 		
-	~SQLTable();
+	virtual ~SQLTable();
 	
 	std::string ToCSV() const;
 	std::string ToCSV(const std::string & columns, const std::string & delimeter) const;
@@ -55,7 +57,9 @@ public:
 	virtual ~SQLKeyValueTable();
 
     void Clear() override;
-    
+
+	
+
 	void EnableRemovalOfNonRegisteredKeys();
 	void DisableRemovalOfNonRegisteredKeys();
 	void RemoveKey(const std::string & key);
@@ -131,8 +135,9 @@ protected:
 	};
 
 
-	SQLQuery updateQuery;
-	SQLQuery selectQuery;
+	
+	//SQLQuery updateQuery;
+	//SQLQuery selectQuery;
 	std::vector<std::string> keys;
 	bool enableNotregisteredKeysRemoval;
 
@@ -145,7 +150,9 @@ protected:
 		p.key = key;
 		p.parent = this;	
 		keys.push_back(key);
-	}
+	};
+
+	SQLResult GetRowForValue(const std::string & key);
 };
 
 
@@ -192,9 +199,10 @@ void SQLKeyValueTable::UpdateValue(const std::string & key, const T & newValue)
 
 template <typename T>
 RET_VAL_SAME(std::string) SQLKeyValueTable::GetValue(const std::string & key)
-{
-	auto s = this->selectQuery.Select(key);
-    auto tmp = s.GetNextRow();
+{	
+	auto s = this->GetRowForValue(key);
+	//auto s = this->selectQuery.Select(key);
+	auto tmp = s.GetNextRow();
     if (tmp == nullptr)
     {
         return T();
@@ -206,7 +214,8 @@ RET_VAL_SAME(std::string) SQLKeyValueTable::GetValue(const std::string & key)
 template <typename T>
 RET_VAL_GROUP(is_integral) SQLKeyValueTable::GetValue(const std::string & key)
 {
-	auto s = this->selectQuery.Select(key);
+	auto s = this->GetRowForValue(key);
+	//auto s = this->selectQuery.Select(key);
     auto tmp = s.GetNextRow();
     if (tmp == nullptr)
     {
@@ -218,7 +227,8 @@ RET_VAL_GROUP(is_integral) SQLKeyValueTable::GetValue(const std::string & key)
 template <typename T>
 RET_VAL_GROUP(is_floating_point) SQLKeyValueTable::GetValue(const std::string & key)
 {
-	auto s = this->selectQuery.Select(key);
+	auto s = this->GetRowForValue(key);
+	//auto s = this->selectQuery.Select(key);
     auto tmp = s.GetNextRow();
     if (tmp == nullptr)
     {

@@ -156,6 +156,7 @@
     <ClInclude Include="SQLEnums.h" />
     <ClInclude Include="sqlite3.h" />
     <ClInclude Include="SQLiteWrapper.h" />
+    <ClInclude Include="SQLLogger.h" />
     <ClInclude Include="SQLQuery.h" />
     <ClInclude Include="SQLResult.h" />
     <ClInclude Include="SQLRow.h" />
