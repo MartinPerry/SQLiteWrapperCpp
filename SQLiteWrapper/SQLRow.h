@@ -28,6 +28,7 @@ public:
     public:
         
         std::string as_string() const;
+        const char* as_cstr(int& strLen) const;
         int as_int() const;
         long as_long() const;
         double as_double() const;

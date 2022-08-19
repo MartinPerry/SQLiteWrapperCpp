@@ -51,6 +51,12 @@ std::string SQLRow::RowValue::as_string() const
                        sqlite3_column_bytes(stmt.get(), column) );
 }
 
+const char* SQLRow::RowValue::as_cstr(int& strLen) const
+{
+    strLen = sqlite3_column_bytes(stmt.get(), column);
+    return (char*)sqlite3_column_text(stmt.get(), column);
+}
+
 int SQLRow::RowValue::as_int() const
 {
     return sqlite3_column_int( stmt.get(), column );
