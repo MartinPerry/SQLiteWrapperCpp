@@ -5,8 +5,9 @@
 //  Created by Martin Prantl on 22/07/2017.
 //  Copyright © 2017 Martin Prantl. All rights reserved.
 //
-
 #include "SQLQuery.h"
+
+#include <string.h>
 
 #include "SQLiteWrapper.h"
 

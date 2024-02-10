@@ -107,20 +107,26 @@ bool SQLiteWrapper::CheckIntegrity()
 
 
 std::shared_ptr<SQLTable> SQLiteWrapper::CreateTable(const std::string & tableName,
+	const std::vector<SQLTable::TableEntry> & columns)
+{
+	return this->CreateTable(tableName, columns, "", false);
+}
+
+std::shared_ptr<SQLTable> SQLiteWrapper::CreateTable(const std::string & tableName,
 	const std::vector<SQLTable::TableEntry> & columns,
 	const std::string & primaryKeyName,
 	bool isPrimaryKeyWithAutoIncrement)
-{	
+{
 	if (this->ExistTable(tableName))
 	{
-		printf("Table %s already exist\n", tableName.c_str());		
+		printf("Table %s already exist\n", tableName.c_str());
 		return std::shared_ptr<SQLTable>(new SQLTable(tableName, shared_from_this()));
 	}
 
 	std::string q = "CREATE TABLE " + tableName;
 
 	q += " (";
-	
+
 
 	for (auto & c : columns)
 	{
@@ -143,8 +149,59 @@ std::shared_ptr<SQLTable> SQLiteWrapper::CreateTable(const std::string & tableNa
 	}
 	q.pop_back();
 	q += ")";
-	
-	
+
+
+	this->Query(q).Execute();
+
+	if (this->ExistTable(tableName) == false)
+	{
+		return nullptr;
+	}
+
+	return std::shared_ptr<SQLTable>(new SQLTable(tableName, shared_from_this()));
+}
+
+std::shared_ptr<SQLTable> SQLiteWrapper::CreateTable(const std::string & tableName,
+	const std::vector<SQLTable::TableEntry> & columns,
+	const std::vector <std::string> & primaryKeyNames)
+{
+	if (this->ExistTable(tableName))
+	{
+		printf("Table %s already exist\n", tableName.c_str());
+		return std::shared_ptr<SQLTable>(new SQLTable(tableName, shared_from_this()));
+	}
+
+	std::string q = "CREATE TABLE " + tableName;
+
+	q += " (";
+
+
+	for (auto & c : columns)
+	{
+		q += c.name;
+		if (c.type == SQLEnums::ValueDataType::String) q += " TEXT";
+		else if (c.type == SQLEnums::ValueDataType::Integer) q += " INTEGER";
+		else if (c.type == SQLEnums::ValueDataType::Float) q += " REAL";
+		else if (c.type == SQLEnums::ValueDataType::Blob) q += " BLOB";
+		q += ",";
+	}
+
+	q.pop_back();
+
+	if (primaryKeyNames.size() != 0)
+	{
+		q += "PRIMARY KEY(";
+		for (auto & keyName : primaryKeyNames)
+		{
+			q += keyName;
+			q += ",";
+		}
+		q.pop_back();
+		q += ")";
+	}
+	q += ")";
+
+
 	this->Query(q).Execute();
 
 	if (this->ExistTable(tableName) == false)
@@ -182,16 +239,45 @@ bool SQLiteWrapper::ExistTable(const std::string & table) const
     return (*row)[0].as_int() != 0;
 }
 
+int SQLiteWrapper::GetCount(const std::string & table, const std::string & colName, 
+	const std::string & wherePart) const
+{
+	std::string s = "SELECT COUNT(";
+	s += colName;
+	s += ") FROM ";
+	s += table;
+	s += " WHERE ";
+	s += wherePart;
+
+	SQLResult res = this->Query(s).Select();
+
+	const SQLRow * row = res.GetNextRow();
+
+	if (row == nullptr)
+	{
+		return 0;
+	}
+
+	return row->at(0).as_int();
+}
+
 
 SQLQuery SQLiteWrapper::Query( const std::string & query ) const
 {
     sqlite3_stmt *stmt = 0;
-    SQLITE_CHECK(sqlite3_prepare_v2(db, query.c_str(), (int)query.length(), &stmt, 0));
+    int r = sqlite3_prepare_v2(db, query.c_str(), (int)query.length(), &stmt, 0);
+    if ((r != SQLITE_OK) && (r != SQLITE_DONE))
+    {
+        SQL_LOG("SQLite error: %i - sqlite3_prepare_v2: %s\n", r, query.c_str());
+    }
     
     return SQLQuery( stmt );
 }
 
-
+int SQLiteWrapper::GetChangesCount() const
+{
+	return sqlite3_changes(db);
+}
 
 
 

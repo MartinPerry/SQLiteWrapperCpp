@@ -50,7 +50,7 @@ protected:
 #define REGISTER_VARIABLE(type, name) KeyValueProperty<type> name{ #name, this };
 #define REGISTER_VARIABLE_DEFAULT(type, name, defaultVal) KeyValueProperty<type> name{ #name, this, defaultVal };
 
-class SQLKeyValueTable : public SQLTable 
+class SQLKeyValueTable : public SQLTable
 {
 public:
 	SQLKeyValueTable(const std::string & name, std::shared_ptr<SQLiteWrapper> wrapper);
@@ -96,13 +96,13 @@ protected:
 	protected:
 		T value = T();
 		std::string key = "";
-		SQLKeyValueTable * parent = nullptr;
+		SQLKeyValueTable* parent = nullptr;
 
 		friend class SQLKeyValueTable;
 
 	public:	
 				
-		KeyValueProperty(const std::string & key, SQLKeyValueTable * parent, const T & defaultVal = T()) 
+		KeyValueProperty(const std::string & key, SQLKeyValueTable* parent, const T & defaultVal = T())
 			: key(key), parent(parent)
 		{
 			parent->RegisterPropertyName(*this, key, defaultVal);

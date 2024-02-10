@@ -51,6 +51,15 @@ std::string SQLRow::RowValue::as_string() const
                        sqlite3_column_bytes(stmt.get(), column) );
 }
 
+/// <summary>
+/// The pointers returned are valid until a type conversion occurs as described above, 
+/// or until sqlite3_step() or sqlite3_reset() or sqlite3_finalize() is called. 
+/// The memory space used to hold strings and BLOBs is freed automatically. 
+/// Do not pass the pointers returned from sqlite3_column_blob(), sqlite3_column_text(), etc. into sqlite3_free().
+/// (https://stackoverflow.com/questions/6402754/sqlite-c-c-api-who-is-respnsible-for-freeing-pointer-from-sqlite3-column-text)
+/// </summary>
+/// <param name="strLen"></param>
+/// <returns></returns>
 const char* SQLRow::RowValue::as_cstr(int& strLen) const
 {
     strLen = sqlite3_column_bytes(stmt.get(), column);

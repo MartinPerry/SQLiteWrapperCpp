@@ -13,7 +13,9 @@
 #include <memory>
 #include <vector>
 
-
+#ifdef __ANDROID_API__
+#include <android/log.h>
+#endif
 
 #include "sqlite3.h"
 
@@ -21,17 +23,21 @@
 #include "SQLQuery.h"
 #include "SQLTable.h"
 
-#include "SQLLogger.h"
+#ifdef __ANDROID_API__
+#	define SQL_LOG(s, r, p) __android_log_print(ANDROID_LOG_ERROR, "SQLite", s, r, p);
+#else
+#	define SQL_LOG(s, r, p) printf(s, r, p)
+#endif
 
 #if defined(_DEBUG) || defined(DEBUG)
-#define SQLITE_CHECK(stmt) do { \
-int r = stmt; \
-if (r != SQLITE_OK && r != SQLITE_DONE){ \
-    SQL_LOG("SQLite error: %i - %s\n", r, #stmt); \
-} \
-} while (0);
+#	define SQLITE_CHECK(stmt) do { \
+	int r = stmt; \
+	if (r != SQLITE_OK && r != SQLITE_DONE){ \
+		SQL_LOG("SQLite error: %i - %s\n", r, #stmt); \
+	} \
+	} while (0);
 #else
-#define SQLITE_CHECK(stmt) stmt
+#	define SQLITE_CHECK(stmt) stmt
 #endif
 
 
@@ -58,16 +64,26 @@ public:
 
 	template <typename T>
 	std::shared_ptr<T> OpenTable(const std::string & tableName);
+
+	std::shared_ptr<SQLTable> CreateTable(const std::string & tableName,
+		const std::vector<SQLTable::TableEntry> & columns);
 	std::shared_ptr<SQLTable> CreateTable(const std::string & tableName,
 		const std::vector<SQLTable::TableEntry> & columns,
 		const std::string & primaryKeyName,
 		bool isPrimaryKeyWithAutoIncrement);
+	std::shared_ptr<SQLTable> CreateTable(const std::string & tableName,
+		const std::vector<SQLTable::TableEntry> & columns,
+		const std::vector <std::string> & primaryKeyNames);
 	
     std::vector<std::string> GetAllTablesNames() const;
     bool ExistTable(const std::string & table) const;
     
+	int GetCount(const std::string & table, const std::string & colName, 
+		const std::string & wherePart) const;
+
     SQLQuery Query( const std::string & query ) const;
 
+	int GetChangesCount() const;
 	
 	//friend class SQLTable;
 

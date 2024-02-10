@@ -8,7 +8,8 @@
 
 struct SQLEnums 
 {
-	enum OpenMode {
+	enum OpenMode 
+	{
 		Read = 0x00000001,
 		ReadWrite = 0x00000002,
 		Create = 0x00000004,

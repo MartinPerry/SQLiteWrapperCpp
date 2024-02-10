@@ -7,7 +7,7 @@ SQLTable::SQLTable(const std::string & name, std::shared_ptr<SQLiteWrapper> wrap
 {
 }
 
-SQLTable::~SQLTable() 
+SQLTable::~SQLTable()
 {
 }
 
